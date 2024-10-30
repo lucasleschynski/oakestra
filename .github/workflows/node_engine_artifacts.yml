@@ -1,13 +1,10 @@
 name: Golang node enigne artifacts
 
-# on:
-#   push:
-#     tags:
-#       - 'v*.*.*'
-#       - 'alpha-v*.*.*'
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'alpha-v*.*.*'
 
 jobs:
   releases-matrix:
@@ -22,14 +19,14 @@ jobs:
     - uses: actions/checkout@v3
     - uses: wangyoucao577/go-release-action@v1.31
       with:
-        github_token: ${{ secrets.FINEGRAINED_TOKEN }}
+        github_token: ${{ secrets.PACKAGES_TOKEN }}
         goos: ${{ matrix.goos }}
         goarch: ${{ matrix.goarch }}
         goversion: "https://go.dev/dl/go1.19.1.linux-amd64.tar.gz"
         project_path: "./go_node_engine"
         binary_name: "NodeEngine"
         ldflags: -X "go_node_engine/cmd.Version=${{ github.ref_name }}"
-        release_name: ${{ steps.meta.outputs.tags }}
+        release_tag: ${{ steps.meta.outputs.tags }}
         asset_name: NodeEngine_${{ matrix.goarch }}
         extra_files: go_node_engine/build/install.sh go_node_engine/build/configure-gpu.sh
         overwrite: TRUE
