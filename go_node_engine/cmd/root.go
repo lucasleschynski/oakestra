@@ -49,7 +49,7 @@ func init() {
 }
 
 func startNodeEngine() error {
-	// test comment
+	// test
 
 	// set log directory
 	model.GetNodeInfo().SetLogDirectory(logDirectory)
