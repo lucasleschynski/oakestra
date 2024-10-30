@@ -64,7 +64,7 @@ services:
 
   # Cluster Manager
   root_service_manager:
-    image: ghcr.io/oakestra/oakestra-net/root-service-manager:latest
+    image: ghcr.io/lucasleschynski/oakestra-net/root-service-manager:latest
     container_name: root_service_manager
     labels:
       logging: "promtail"

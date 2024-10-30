@@ -9,7 +9,7 @@ x-logging:
 services:
 
   dashboard:
-    image: ghcr.io/oakestra/dashboard:latest
+    image: ghcr.io/lucasleschynski/dashboard:latest
     ports:
       - '80:80'
     restart: unless-stopped
@@ -19,7 +19,7 @@ services:
 
   # System Manager REST API of Root Orchestrator
   system_manager:
-    image: ghcr.io/oakestra/oakestra/root-system-manager:latest
+    image: ghcr.io/lucasleschynski/oakestra/root-system-manager:latest
     hostname: system_manager
     container_name: system_manager
     labels:
@@ -74,7 +74,7 @@ services:
 
   # Cluster Manager
   root_service_manager:
-    image: ghcr.io/oakestra/oakestra-net/root-service-manager:latest
+    image: ghcr.io/lucasleschynski/oakestra-net/root-service-manager:latest
     container_name: root_service_manager
     hostname: root_service_manager
     labels:
@@ -105,7 +105,7 @@ services:
     command: redis-server --requirepass cloudRedis
 
   resource_abstractor:
-    image: ghcr.io/oakestra/oakestra/root-resource-abstractor:latest
+    image: ghcr.io/lucasleschynski/oakestra/root-resource-abstractor:latest
     container_name: resource_abstractor
     hostname: resource_abstractor
     labels:
@@ -126,7 +126,7 @@ services:
 
   # Cloud Scheduler
   cloud_scheduler:
-    image: ghcr.io/oakestra/oakestra/cloud-scheduler:latest
+    image: ghcr.io/lucasleschynski/oakestra/cloud-scheduler:latest
     container_name: cloud_scheduler
     hostname: cloud_scheduler
     labels:
@@ -194,7 +194,7 @@ services:
 
   # Cluster Manager
   cluster_service_manager:
-    image: ghcr.io/oakestra/oakestra-net/cluster-service-manager:latest
+    image: ghcr.io/lucasleschynski/oakestra-net/cluster-service-manager:latest
     container_name: cluster_service_manager
     hostname: cluster_service_manager
     labels:
@@ -221,7 +221,7 @@ services:
 
   # Cluster Manager
   cluster_manager:
-    image: ghcr.io/oakestra/oakestra/cluster-manager:latest
+    image: ghcr.io/lucasleschynski/oakestra/cluster-manager:latest
     container_name: cluster_manager
     hostname: cluster_manager
     expose:
@@ -259,7 +259,7 @@ services:
 
   # Cluster Scheduler
   cluster_scheduler:
-    image: ghcr.io/oakestra/oakestra/cluster-scheduler:latest
+    image: ghcr.io/lucasleschynski/oakestra/cluster-scheduler:latest
     container_name: cluster_scheduler
     hostname: cluster_scheduler
     labels:

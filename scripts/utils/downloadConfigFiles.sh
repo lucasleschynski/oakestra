@@ -12,5 +12,5 @@ mkdir mosquitto 2> /dev/null
 for config_file in ${config_files}; do
     rm $config_file 2> /dev/null
     touch $config_file 
-    curl -sL https://raw.githubusercontent.com/oakestra/oakestra/$repo_branch/$repo_folder/$config_file -o $config_file
+    curl -sL https://raw.githubusercontent.com/lucasleschynski/oakestra/$repo_branch/$repo_folder/$config_file -o $config_file
 done
