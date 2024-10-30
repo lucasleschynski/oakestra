@@ -1,10 +1,13 @@
 name: Golang node enigne artifacts
 
+# on:
+#   push:
+#     tags:
+#       - 'v*.*.*'
+#       - 'alpha-v*.*.*'
 on:
-  push:
-    tags:
-      - 'v*.*.*'
-      - 'alpha-v*.*.*'
+  release:
+    types: [created]
 
 jobs:
   releases-matrix:
