@@ -3,8 +3,9 @@ name: Docker root-scheduler-python
 on:
   push:
     tags:
-      - 'v*.*.*'
+      # - 'v*.*.*'
       - 'alpha-v*.*.*'
+      - latest
 
 env:
   # Use docker.io for Docker Hub if empty

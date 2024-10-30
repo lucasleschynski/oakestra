@@ -3,6 +3,7 @@ name: Golang node enigne artifacts
 on:
   push:
     tags:
+      - latest
       - 'v*.*.*'
       - 'alpha-v*.*.*'
 

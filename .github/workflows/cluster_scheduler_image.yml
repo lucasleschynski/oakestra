@@ -3,6 +3,7 @@ name: Docker cluster-scheduler-python
 on:
   push:
     tags:
+      - latest
       - 'v*.*.*'
       - 'alpha-v*.*.*'
 

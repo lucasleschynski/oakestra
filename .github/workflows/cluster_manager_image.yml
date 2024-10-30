@@ -3,6 +3,7 @@ name: Docker cluster-manager-python
 on:
   push:
     tags:
+      - latest
       - 'v*.*.*'
       - 'alpha-v*.*.*'
 
