@@ -3,7 +3,7 @@ echo 🌳 Running Oakestra 1-DOC
 
 #Oakestra branch?
 if [ -z "$OAKESTRA_BRANCH" ]; then
-    OAKESTRA_BRANCH='main'
+    OAKESTRA_BRANCH='develop'
 fi
 
 # Check if docker and docker compose installed 
@@ -88,8 +88,8 @@ mkdir ~/oakestra 2> /dev/null
 
 cd ~/oakestra 
 
-curl -sfL https://raw.githubusercontent.com/oakestra/oakestra/$OAKESTRA_BRANCH/scripts/utils/downloadConfigFiles.sh > downloadConfigFiles.sh
-curl -sfL https://raw.githubusercontent.com/oakestra/oakestra/$OAKESTRA_BRANCH/run-a-cluster/1-DOC.yaml > 1-DOC.yaml
+curl -sfL https://raw.githubusercontent.com/lucasleschynski/oakestra/$OAKESTRA_BRANCH/scripts/utils/downloadConfigFiles.sh > downloadConfigFiles.sh
+curl -sfL https://raw.githubusercontent.com/lucasleschynski/oakestra/$OAKESTRA_BRANCH/run-a-cluster/1-DOC.yaml > 1-DOC.yaml
 
 chmod +x downloadConfigFiles.sh
 ./downloadConfigFiles.sh run-a-cluster $OAKESTRA_BRANCH
@@ -108,7 +108,7 @@ if [ ! -z "$OVERRIDE_FILES" ]; then
     for element in $OVERRIDE_FILES
     do
         echo "Download override: $element"
-        curl -sfL https://raw.githubusercontent.com/oakestra/oakestra/$OAKESTRA_BRANCH/run-a-cluster/$element > $element
+        curl -sfL https://raw.githubusercontent.com/lucasleschynski/oakestra/$OAKESTRA_BRANCH/run-a-cluster/$element > $element
         OAK_OVERRIDES="${OAK_OVERRIDES}-f ${element} " 
     done
     IFS= 
