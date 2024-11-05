@@ -88,6 +88,7 @@ func runMqttClient(opts *mqtt.ClientOptions) {
 }
 
 func publishToBroker(topic string, payload string) {
+	logger.InfoLogger().Printf("THIS IS MY MESSAGE FROM THE OAKESTRA SOURCE CODE <<>><<>><<>><<>><<>><<>><<>><<>><<> HELLO WORLD")
 	logger.InfoLogger().Printf("MQTT - publish to - %s - the payload - %s", topic, payload)
 	token := mainMqttClient.Publish(fmt.Sprintf("nodes/%s/%s", clientID, topic), 1, false, payload)
 	if token.WaitTimeout(time.Second*5) && token.Error() != nil {
