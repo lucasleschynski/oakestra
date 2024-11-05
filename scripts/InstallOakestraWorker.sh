@@ -1,5 +1,4 @@
 #!/bin/bash
-$OAKESTRA_VERSION = "alpha"
 
 if [ -z "$OAKESTRA_VERSION" ]; then
     OAKESTRA_VERSION=$(curl -s https://raw.githubusercontent.com/lucasleschynski/oakestra/develop/version.txt)
