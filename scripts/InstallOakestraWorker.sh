@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ -z "$OAKESTRA_VERSION" ]; then
-    OAKESTRA_VERSION=$(curl -s https://raw.githubusercontent.com/lucasleschynski/oakestra/main/version.txt)
+    OAKESTRA_VERSION=$(curl -s https://raw.githubusercontent.com/lucasleschynski/oakestra/develop/version.txt)
 else 
     if [ "$OAKESTRA_VERSION" = "alpha" ]; then
         OAKESTRA_VERSION=alpha-$(curl -s https://raw.githubusercontent.com/lucasleschynski/oakestra/develop/version.txt)
