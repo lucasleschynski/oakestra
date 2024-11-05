@@ -1,4 +1,6 @@
 #!/bin/bash
+$OAKESTRA_VERSION = "alpha"
+
 if [ -z "$OAKESTRA_VERSION" ]; then
     OAKESTRA_VERSION=$(curl -s https://raw.githubusercontent.com/lucasleschynski/oakestra/develop/version.txt)
 else 
@@ -18,7 +20,7 @@ if [ $? -ne 0 ]; then
         exit 1
 fi
 
-wget -c https://github.com/lucasleschynski/oakestra-net/releases/download/$OAKESTRA_VERSION/NetManager_$(dpkg --print-architecture).tar.gz && tar -xzf NetManager_$(dpkg --print-architecture).tar.gz && chmod +x install.sh && ./install.sh $(dpkg --print-architecture)
+wget -c https://github.com/oakestra/oakestra-net/releases/download/$OAKESTRA_VERSION/NetManager_$(dpkg --print-architecture).tar.gz && tar -xzf NetManager_$(dpkg --print-architecture).tar.gz && chmod +x install.sh && ./install.sh $(dpkg --print-architecture)
 if [ $? -ne 0 ]; then
         echo "Error: Failed to retrieve or install the Oakestra Net Manager."
         exit 1
