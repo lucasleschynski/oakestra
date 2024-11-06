@@ -18,13 +18,12 @@ worker_join_schema = {
 
 @dynamic_join_bp.route("/register_intent")
 class DynamicJoinController(MethodView):
-    @dynamic_join_bp.arguments(schema=worker_join_schema, location="json", validate=False, unknown=True)
+    # @dynamic_join_bp.arguments(schema=worker_join_schema, location="json", validate=False, unknown=True)
     def post(self, *args, **kwargs):
         data = request.get_json()
         logging.log(logging.INFO, data)
-        worker_ip = data.get("worker_ip")
+        # worker_ip = data.get("worker_ip")
 
-        
         clusters = cluster_operations.get_resources(active=True)
         if clusters is None:
             return abort(500, "Getting clusters failed")
