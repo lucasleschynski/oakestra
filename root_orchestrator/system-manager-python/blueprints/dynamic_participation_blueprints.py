@@ -1,5 +1,6 @@
 import logging
 
+from bson import json_util
 from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
@@ -29,6 +30,17 @@ class DynamicJoinController(MethodView):
             return abort(500, "Getting clusters failed")
         
         logging.log(logging.INFO, clusters)
-        # return json_util.dumps(clusters)
 
-        return "ok"
+        chosen_cluster = choose_cluster(clusters)
+
+        response = {
+            "cluster_manager_addr": chosen_cluster["ip"],
+            "cluster_manager_port": chosen_cluster["port"]
+        }
+        
+        return json_util.dumps(response)
+    
+
+## TODO: implement something for this
+def choose_cluster(clusters):
+    return clusters[0]
