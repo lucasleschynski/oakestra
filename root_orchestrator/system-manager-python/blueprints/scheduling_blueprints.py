@@ -15,7 +15,6 @@ auth_schema = {
     },
 }
 
-
 @schedulingbp.route("/deploy")
 class SchedulingController(MethodView):
     @schedulingbp.arguments(schema=auth_schema, location="json", validate=False, unknown=True)

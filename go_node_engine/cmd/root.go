@@ -24,6 +24,8 @@ var (
 			return startNodeEngine()
 		},
 	}
+	rootAddress      string
+	rootPort         int
 	clusterAddress   string
 	clusterPort      int
 	overlayNetwork   int
@@ -41,8 +43,11 @@ func Execute() error {
 }
 
 func init() {
-	rootCmd.Flags().StringVarP(&clusterAddress, "clusterAddr", "a", "localhost", "Address of the cluster orchestrator without port")
-	rootCmd.Flags().IntVarP(&clusterPort, "clusterPort", "p", 10100, "Port of the cluster orchestrator")
+	rootCmd.Flags().StringVarP(&rootAddress, "rootAddr", "r", "localhost", "Address of the root orchestrator without port")
+	rootCmd.Flags().IntVarP(&rootPort, "rootPort", "p", 10100, "Port of the root orchestrator")
+
+	// rootCmd.Flags().StringVarP(&clusterAddress, "clusterAddr", "a", "localhost", "Address of the cluster orchestrator without port")
+	// rootCmd.Flags().IntVarP(&clusterPort, "clusterPort", "p", 10100, "Port of the cluster orchestrator")
 	rootCmd.Flags().IntVarP(&overlayNetwork, "netmanagerPort", "n", 6000, "Port of the NetManager component, if any. This enables the overlay network across nodes. Use -1 to disable Overlay Network Mode.")
 	rootCmd.Flags().BoolVarP(&unikernelSupport, "unikernel", "u", false, "Enable Unikernel support. [qemu/kvm required]")
 	rootCmd.Flags().StringVarP(&logDirectory, "logs", "l", "/tmp", "Directory for application's logs")
@@ -62,6 +67,11 @@ func startNodeEngine() error {
 		unikernelRuntime := virtualization.GetUnikernelRuntime()
 		defer unikernelRuntime.StopUnikernelRuntime()
 	}
+
+	rootHandshakeResult := rootHandshake()
+
+	logger.InfoLogger().Printf("Cluster Manager IP/Port: %s:%d", rootHandshakeResult.ClusterManagerAddr, rootHandshakeResult.ClusterManagerPort)
+
 	// hadshake with the cluster orchestrator to get mqtt port and node id
 	handshakeResult := clusterHandshake()
 
@@ -94,7 +104,12 @@ func startNodeEngine() error {
 	return nil
 }
 
-func clusterHandshake() requests.HandshakeAnswer {
+func rootHandshake() requests.RootHandshakeAnswer {
+	rootResponse := requests.RootHandshake(rootAddress, rootPort)
+	return rootResponse
+}
+
+func clusterHandshake() requests.ClusterHandshakeAnswer {
 	logger.InfoLogger().Printf("INIT: Starting handshake with cluster orchestrator %s:%d", clusterAddress, clusterPort)
 	node := model.GetNodeInfo()
 	logger.InfoLogger().Printf("Node Statistics: \n__________________")

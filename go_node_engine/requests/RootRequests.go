@@ -11,19 +11,19 @@ import (
 )
 
 // HandshakeAnswer is the struct that describes the handshake answer between the nodes
-type ClusterHandshakeAnswer struct {
-	MqttPort string `json:"MQTT_BROKER_PORT"`
-	NodeId   string `json:"id"`
+type RootHandshakeAnswer struct {
+	ClusterManagerAddr string `json:"cluster_manager_addr"`
+	ClusterManagerPort int    `json:"cluster_manager_port"`
 }
 
 // ClusterHandshake sends a handshake request to the cluster manager
-func ClusterHandshake(address string, port int) ClusterHandshakeAnswer {
+func RootHandshake(address string, port int) RootHandshakeAnswer {
 	data, err := json.Marshal(model.GetNodeInfo())
 	if err != nil {
 		logger.ErrorLogger().Fatalf("Handshake failed, json encoding problem, %v", err)
 	}
 	jsonbody := bytes.NewBuffer(data)
-	resp, err := http.Post(fmt.Sprintf("http://%s:%d/api/node/register", address, port), "application/json", jsonbody)
+	resp, err := http.Post(fmt.Sprintf("http://%s:%d/api/dynamic/register_intent", address, port), "application/json", jsonbody) //WHICH PORT TO SEND TO?
 	if err != nil {
 		logger.ErrorLogger().Fatalf("Handshake failed, %v", err)
 	}
@@ -37,7 +37,7 @@ func ClusterHandshake(address string, port int) ClusterHandshakeAnswer {
 		}
 	}()
 
-	handshakeAnswer := ClusterHandshakeAnswer{}
+	handshakeAnswer := RootHandshakeAnswer{}
 	responseBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		logger.ErrorLogger().Fatalf("Handshake failed, %v", err)
