@@ -28,7 +28,7 @@ class DynamicJoinController(MethodView):
         if clusters is None:
             return abort(500, "Getting clusters failed")
         
-        logging.log(clusters)
+        logging.log(logging.INFO, clusters)
         # return json_util.dumps(clusters)
 
         return "ok"
