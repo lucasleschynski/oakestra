@@ -220,7 +220,7 @@ def register_with_system_manager():
             message.network_component_port = int(NETWORK_COMPONENT_PORT)
             message.cluster_name = MY_CHOSEN_CLUSTER_NAME
             message.cluster_location = MY_CLUSTER_LOCATION
-            message.public_ip = requests.get('https://checkip.amazonaws.com').text.strip()
+            message.public_ip = "111.111.111.114" # requests.get('https://checkip.amazonaws.com').text.strip()
 
             # Add additional key-value pairs to SC2Message
             key_value_message = KeyValue()
