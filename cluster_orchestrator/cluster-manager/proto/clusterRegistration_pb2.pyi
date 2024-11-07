@@ -29,6 +29,7 @@ class CS2Message(_message.Message):
         "cluster_name",
         "cluster_info",
         "cluster_location",
+        "public_ip"
     )
     MANAGER_PORT_FIELD_NUMBER: _ClassVar[int]
     NETWORK_COMPONENT_PORT_FIELD_NUMBER: _ClassVar[int]
@@ -40,6 +41,7 @@ class CS2Message(_message.Message):
     cluster_name: str
     cluster_info: _containers.RepeatedCompositeFieldContainer[KeyValue]
     cluster_location: str
+    public_ip: str
 
     def __init__(
         self,
@@ -48,6 +50,7 @@ class CS2Message(_message.Message):
         cluster_name: _Optional[str] = ...,
         cluster_info: _Optional[_Iterable[_Union[KeyValue, _Mapping]]] = ...,
         cluster_location: _Optional[str] = ...,
+        public_ip: _Optional[str] = ...,
     ) -> None: ...
 
 class KeyValue(_message.Message):

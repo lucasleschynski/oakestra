@@ -102,11 +102,11 @@ class ClusterRegistrationServicer(register_clusterServicer):
         message = MessageToDict(request, preserving_proto_field_name=True)
         app.logger.info("Message: {}, request {}".format(message, request))
         cluster_ip = context.peer().split(":")[1]
-
         cluster_address = sanitize(cluster_ip)
         app.logger.info("Cluster address: {}".format(cluster_address))
         cluster_data = {
             "ip": cluster_address,
+            "public_ip": str(message["public_ip"]),
             "clusterinfo": message["cluster_info"][0],
             "port": str(message["manager_port"]),
             "cluster_location": message["cluster_location"],
