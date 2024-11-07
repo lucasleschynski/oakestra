@@ -48,3 +48,7 @@ func RootHandshake(address string, port int) RootHandshakeAnswer {
 	}
 	return handshakeAnswer
 }
+
+// func RootExit() {
+// 		When the worker decides to exit, it will need to send a request to the root to tell it this.
+// }

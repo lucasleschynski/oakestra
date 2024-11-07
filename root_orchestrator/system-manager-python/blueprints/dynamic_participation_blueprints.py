@@ -35,9 +35,9 @@ class DynamicJoinController(MethodView):
 
         response = {
             "cluster_manager_addr": chosen_cluster["ip"],
-            "cluster_manager_port": chosen_cluster["port"]
+            "cluster_manager_port": int(chosen_cluster["port"])
         }
-        
+
         return json_util.dumps(response)
     
 

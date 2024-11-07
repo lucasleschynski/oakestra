@@ -70,7 +70,10 @@ func startNodeEngine() error {
 
 	rootHandshakeResult := rootHandshake()
 
-	logger.InfoLogger().Printf("Cluster Manager IP/Port: %s:%d", rootHandshakeResult.ClusterManagerAddr, rootHandshakeResult.ClusterManagerPort)
+	clusterAddress = rootHandshakeResult.ClusterManagerAddr
+	clusterPort = rootHandshakeResult.ClusterManagerPort
+
+	logger.InfoLogger().Printf("Received cluster Manager IP/Port: %s:%d", rootHandshakeResult.ClusterManagerAddr, rootHandshakeResult.ClusterManagerPort)
 
 	// hadshake with the cluster orchestrator to get mqtt port and node id
 	handshakeResult := clusterHandshake()
