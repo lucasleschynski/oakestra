@@ -120,7 +120,7 @@ class ClusterRegistrationServicer(register_clusterServicer):
 
         cid = str(cluster["_id"])
 
-        app.logger.info("DB CLUSTER: {}".format(cluster["public_ip"]))
+        app.logger.info("DB CLUSTER: {}".format(cluster))
 
         net_register_cluster(
             cluster_id=cid,
