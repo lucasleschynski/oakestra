@@ -25,17 +25,17 @@ class DynamicJoinController(MethodView):
         logging.log(logging.INFO, data)
         # worker_ip = data.get("worker_ip")
 
-        clusters = cluster_operations.get_resources(active=True)
+        clusters = list(cluster_operations.get_resources(active=True))
         if clusters is None:
             return abort(500, "Getting clusters failed")
         
-        logging.log(logging.INFO, clusters)
+        logging.log(logging.INFO, type(clusters))
 
         chosen_cluster = choose_cluster(clusters)
 
         response = {
-            "cluster_manager_addr": chosen_cluster["public_ip"],
-            "cluster_manager_port": int(chosen_cluster["port"])
+            "cluster_manager_addr": chosen_cluster.get("public_ip"),
+            "cluster_manager_port": int(chosen_cluster.get("port"))
         }
 
         return json_util.dumps(response)
