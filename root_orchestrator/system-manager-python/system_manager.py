@@ -110,7 +110,7 @@ class ClusterRegistrationServicer(register_clusterServicer):
             "port": str(message["manager_port"]),
             "cluster_location": message["cluster_location"],
             "cluster_name": message["cluster_name"],
-            "public_ip": str(message["public_ip"])
+            "public_ip": message["public_ip"]
         }
         app.logger.info("Cluster data: {}".format(cluster_data))
         cluster = cluster_operations.create_cluster(cluster_data)

@@ -15,6 +15,7 @@ class ResourceSchema(Schema):
     cluster_name = fields.String()
     cluster_location = fields.String()
     ip = fields.String()
+    public_ip = fields.String()
     port = fields.String()
     active_nodes = fields.Integer()
     active = fields.Boolean()
