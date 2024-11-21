@@ -69,7 +69,8 @@ def mongo_upsert_node(obj):
 
 def mongo_find_node_by_id(node_id):
     global mongo_nodes
-    return mongo_nodes.db.nodes.find_one(node_id)
+    # return mongo_nodes.db.nodes.find_one(node_id)
+    return mongo_nodes.db.nodes.find_one({"_id": ObjectId(node_id)})
 
 
 def mongo_find_node_by_name(node_name):

@@ -16,6 +16,7 @@ from mongodb_client import (
     mongo_init,
     mongo_update_job_status,
     mongo_upsert_node,
+    mongo_find_node_by_id
 )
 from mqtt_client import mqtt_init, mqtt_publish_edge_deploy
 from my_prometheus_client import prometheus_init_gauge_metrics
@@ -251,6 +252,32 @@ def register_with_system_manager():
 # ........... FINISH - register to System Manager with gRPC.................#
 # ..........................................................................#
 
+
+# ........... DYNAMIC PARTICIPATION.................##
+
+@app.route("/api/node/request_exit", methods=["POST"])
+def http_node_request_exit():
+    app.logger.info("Incoming Request /api/node/request_exit")
+    data = request.json  # get POST body
+
+    node_info = mongo_find_node_by_id(data.get("exit_reason"))
+    app.logger.info(f"{node_info}")
+
+    response = {
+        "message": "dummy reason" 
+    }
+    return response, 200
+
+    # data.get("token")  # registration_token
+    # # TODO: check and generate tokens
+    # client_id = mongo_upsert_node({"ip": request.remote_addr, "node_info": data})
+    # response = {
+    #     "id": str(client_id),
+    #     "MQTT_BROKER_PORT": os.environ.get("MQTT_BROKER_PORT"),
+    # }
+    # return response, 200
+
+# ..........................................................................#
 
 if __name__ == "__main__":
 

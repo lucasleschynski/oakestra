@@ -99,9 +99,13 @@ func startNodeEngine() error {
 	termination := make(chan os.Signal, 1)
 	// SIGKILL cannot be trapped, using SIGTERM instead
 	signal.Notify(termination, syscall.SIGTERM, syscall.SIGINT)
+
 	select {
 	case ossignal := <-termination:
-		logger.InfoLogger().Printf("Terminating the NodeEngine, signal:%v", ossignal)
+		logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
+
+		exitResponse := requests.NotifyClusterExit(clusterAddress, clusterPort, handshakeResult.NodeId)
+		logger.InfoLogger().Printf("Got response from cluster regarding exit: %s", exitResponse.Message)
 	}
 
 	return nil

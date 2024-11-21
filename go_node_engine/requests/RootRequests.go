@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-// HandshakeAnswer is the struct that describes the handshake answer between the nodes
+// IP + Port of the cluster which the root determined the worker should connect to
 type RootHandshakeAnswer struct {
 	ClusterManagerAddr string `json:"cluster_manager_addr"`
 	ClusterManagerPort int    `json:"cluster_manager_port"`
