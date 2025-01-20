@@ -253,7 +253,7 @@ def register_with_system_manager():
 # ..........................................................................#
 
 
-# ........... DYNAMIC PARTICIPATION.................##
+# ........... DYNAMIC PARTICIPATION.................#
 
 @app.route("/api/node/request_exit", methods=["POST"])
 def http_node_request_exit():

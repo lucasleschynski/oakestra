@@ -19,7 +19,10 @@ if [ $? -ne 0 ]; then
         exit 1
 fi
 
-wget -c https://github.com/oakestra/oakestra-net/releases/download/alpha-$OAKESTRA_VERSION/NetManager_$(dpkg --print-architecture).tar.gz && tar -xzf NetManager_$(dpkg --print-architecture).tar.gz && chmod +x install.sh && ./install.sh $(dpkg --print-architecture)
+alpha-v0.4.302
+wget -c https://github.com/oakestra/oakestra-net/releases/download/alpha-v0.4.302/NetManager_$(dpkg --print-architecture).tar.gz && tar -xzf NetManager_$(dpkg --print-architecture).tar.gz && chmod +x install.sh && ./install.sh $(dpkg --print-architecture)
+
+# wget -c https://github.com/oakestra/oakestra-net/releases/download/alpha-$OAKESTRA_VERSION/NetManager_$(dpkg --print-architecture).tar.gz && tar -xzf NetManager_$(dpkg --print-architecture).tar.gz && chmod +x install.sh && ./install.sh $(dpkg --print-architecture)
 if [ $? -ne 0 ]; then
         echo "Error: Failed to retrieve or install the Oakestra Net Manager."
         exit 1

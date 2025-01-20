@@ -59,7 +59,10 @@ func ClusterHandshake(address string, port int) ClusterHandshakeAnswer {
 }
 
 func NotifyClusterExit(address string, port int, node_id string) ClusterExitResponse {
-	request := ClusterExitRequest{ExitReason: node_id}
+	request := ClusterExitRequest{
+		ExitReason: node_id,
+	}
+
 	data, err := json.Marshal(request)
 	if err != nil {
 		logger.ErrorLogger().Fatalf("Exit request failed, json encoding problem, %v", err)
