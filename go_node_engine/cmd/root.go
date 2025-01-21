@@ -54,8 +54,6 @@ func init() {
 }
 
 func startNodeEngine() error {
-	// t
-
 	// set log directory
 	model.GetNodeInfo().SetLogDirectory(logDirectory)
 
@@ -103,9 +101,13 @@ func startNodeEngine() error {
 	select {
 	case ossignal := <-termination:
 		logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
-
 		exitResponse := requests.NotifyClusterExit(clusterAddress, clusterPort, handshakeResult.NodeId)
 		logger.InfoLogger().Printf("Got response from cluster regarding exit: %s", exitResponse.Message)
+
+		// call function which waits for containers to exit
+		logger.InfoLogger().Printf("Waiting for all containers to exit...")
+		runtime.WaitForContainerExits()
+		logger.InfoLogger().Printf("All containers have exited")
 	}
 
 	return nil

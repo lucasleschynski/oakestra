@@ -16,7 +16,8 @@ from mongodb_client import (
     mongo_init,
     mongo_update_job_status,
     mongo_upsert_node,
-    mongo_find_node_by_id
+    mongo_find_node_by_id,
+    mongo_remove_node
 )
 from mqtt_client import mqtt_init, mqtt_publish_edge_deploy
 from my_prometheus_client import prometheus_init_gauge_metrics
@@ -260,13 +261,23 @@ def http_node_request_exit():
     app.logger.info("Incoming Request /api/node/request_exit")
     data = request.json  # get POST body
 
-    node_info = mongo_find_node_by_id(data.get("exit_reason"))
+    exiting_node_id = data.get("node_id")
+
+    node_info = mongo_find_node_by_id(exiting_node_id)
     app.logger.info(f"{node_info}")
 
-    response = {
-        "message": "dummy reason" 
-    }
-    return response, 200
+    if node_info:
+        mongo_remove_node(exiting_node_id)
+
+        response = {
+            "message": "(worked) dummy reason" 
+        }
+        return response, 200
+    else:
+        response = {
+        "message": "(failed) dummy reason" 
+        }
+        return response, 500
 
     # data.get("token")  # registration_token
     # # TODO: check and generate tokens

@@ -18,7 +18,7 @@ type ClusterHandshakeAnswer struct {
 
 // Sent to the cluster manager upon exit decision
 type ClusterExitRequest struct {
-	ExitReason string `json:"exit_reason"`
+	NodeId string `json:"node_id"`
 }
 
 type ClusterExitResponse struct {
@@ -60,7 +60,7 @@ func ClusterHandshake(address string, port int) ClusterHandshakeAnswer {
 
 func NotifyClusterExit(address string, port int, node_id string) ClusterExitResponse {
 	request := ClusterExitRequest{
-		ExitReason: node_id,
+		NodeId: node_id,
 	}
 
 	data, err := json.Marshal(request)

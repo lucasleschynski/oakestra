@@ -158,6 +158,47 @@ func (r *ContainerRuntime) Undeploy(service string, instance int) error {
 	return errors.New("service not found")
 }
 
+func (r *ContainerRuntime) WaitForContainerExits() error {
+	// Get the list of containers
+	containers, err := r.contaierClient.Containers(r.ctx)
+	if err != nil {
+		return fmt.Errorf("failed to list containers: %w", err)
+	}
+
+	// Create a wait group to track container exit events
+	var wg sync.WaitGroup
+
+	for _, container := range containers {
+		wg.Add(1)
+
+		go func(c containerd.Container) {
+			defer wg.Done()
+
+			// Get the task for the container
+			task, err := c.Task(r.ctx, nil)
+			if err != nil {
+				// Container might not have a task; log the error and continue
+				fmt.Printf("failed to get task for container %s: %v\n", c.ID(), err)
+				return
+			}
+
+			// Wait for the task to exit
+			statusC, err := task.Wait(r.ctx)
+			if err != nil {
+				fmt.Printf("failed to wait for task in container %s: %v\n", c.ID(), err)
+				return
+			}
+
+			// Consume the exit status
+			<-statusC
+		}(container)
+	}
+
+	// Wait for all goroutines to complete
+	wg.Wait()
+	return nil
+}
+
 func (r *ContainerRuntime) containerCreationRoutine(
 	ctx context.Context,
 	image containerd.Image,
