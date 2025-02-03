@@ -270,7 +270,7 @@ def http_node_request_exit():
         mongo_remove_node(exiting_node_id)
 
         response = {
-            "message": "(worked) dummy reason"
+            "message": "(worked) dummy reason" 
         }
         return response, 200
     else:
