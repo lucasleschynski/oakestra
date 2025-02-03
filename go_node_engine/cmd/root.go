@@ -100,7 +100,6 @@ func startNodeEngine() error {
 
 	select {
 	case ossignal := <-termination:
-		/////////////////////// WAIT FOR CONTAINER EXITS ///////////////////////
 		logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
 		exitResponse := requests.NotifyClusterExit(clusterAddress, clusterPort, handshakeResult.NodeId)
 		logger.InfoLogger().Printf("Got response from cluster regarding exit: %s", exitResponse.Message)
@@ -109,14 +108,6 @@ func startNodeEngine() error {
 		logger.InfoLogger().Printf("Waiting for all containers to exit...")
 		runtime.WaitForContainerExits()
 		logger.InfoLogger().Printf("All containers have exited")
-		////////////////////////////////////////////////////////////////////////
-
-		// logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
-		// exitResponse := requests.NotifyClusterExit(clusterAddress, clusterPort, handshakeResult.NodeId)
-		// logger.InfoLogger().Printf("Got response from cluster regarding exit: %s", exitResponse.Message)
-		// logger.InfoLogger().Printf("PRINTING CONTAINERS")
-		// runtime.PrintContainers()
-		// runtime.WaitForContainerExits()
 	}
 
 	return nil
