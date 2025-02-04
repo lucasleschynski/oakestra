@@ -199,6 +199,18 @@ func (r *ContainerRuntime) WaitForContainerExits() error {
 	return nil
 }
 
+func (r *ContainerRuntime) PrintContainers() error {
+	containers, err := r.contaierClient.Containers(r.ctx)
+	if err != nil {
+		return fmt.Errorf("failed to list containers: %w", err)
+	}
+
+	for _, container := range containers {
+		fmt.Printf("CONTAINER: %s\n", container.ID())
+	}
+	return nil
+}
+
 func (r *ContainerRuntime) containerCreationRoutine(
 	ctx context.Context,
 	image containerd.Image,
