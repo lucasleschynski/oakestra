@@ -48,7 +48,7 @@ services:
 
   # MongoDB in Root Orchestrator
   mongo_root:
-    image: mongo:8.0
+    image: mongo:4.0
     container_name: mongo
     hostname: mongo
     expose:
@@ -59,7 +59,7 @@ services:
 
   # cluster-level mongoDB
   mongo_rootnet:
-    image: mongo:8.0
+    image: mongo:4.0
     container_name: mongo_net
     hostname: mongo_net
     labels:
@@ -171,7 +171,7 @@ services:
 
   # cluster-level mongoDB
   mongo_cluster:
-    image: mongo:8.0
+    image: mongo:4.0
     container_name: cluster_mongo
     hostname: cluster_mongo
     expose:
@@ -182,7 +182,7 @@ services:
 
   # cluster-level mongoDB
   mongo_clusternet:
-    image: mongo:8.0
+    image: mongo:4.0
     container_name: cluster_mongo_net
     hostname: cluster_mongo_net
     expose:
