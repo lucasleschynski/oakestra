@@ -126,7 +126,6 @@ func NotifyClusterExit(address string, port int, node_id string) ClusterExitResp
 }
 
 func Negotiate(address string, port int, node_id string) {
-
 	for {
 
 		// Sending Request
