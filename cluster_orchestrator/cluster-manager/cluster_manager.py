@@ -256,6 +256,8 @@ def register_with_system_manager():
 
 # ........... DYNAMIC PARTICIPATION.................#
 
+
+###### SIMPLE EXIT ######
 @app.route("/api/node/request_exit", methods=["POST"])
 def http_node_request_exit():
     app.logger.info("Incoming Request /api/node/request_exit")
@@ -275,19 +277,63 @@ def http_node_request_exit():
         return response, 200
     else:
         response = {
-        "message": "(failed) dummy reason" 
+            "message": "(failed) dummy reason" 
         }
         return response, 500
 
-    # data.get("token")  # registration_token
-    # # TODO: check and generate tokens
-    # client_id = mongo_upsert_node({"ip": request.remote_addr, "node_info": data})
-    # response = {
-    #     "id": str(client_id),
-    #     "MQTT_BROKER_PORT": os.environ.get("MQTT_BROKER_PORT"),
-    # }
-    # return response, 200
+#########################
 
+###### HEURISTIC/NEGOTIATION EXIT ######
+@app.route("/api/node/negotiate_exit", methods=["POST"])
+def http_node_negotiate_exit():
+    app.logger.info("Incoming Request /api/node/negotiate_exit")
+    data = request.json  # get POST body
+
+    exiting_node_id = data.get("node_id")
+
+    node_info = mongo_find_node_by_id(exiting_node_id)
+    app.logger.info(f"{node_info}")
+
+    if node_info:
+        response = {"decisions": []}
+        services = node_info["payload"]["services"]
+
+        for service in services:
+            jobId = f"{service["job_name"]}.instance.{service["instance"]}"
+            response["decisions"].append(
+                {"jobId": jobId,
+                "decision": "KEEP" }
+            )
+        # mongo_remove_node(exiting_node_id)
+
+        # response = {
+        #     "message": "(worked) dummy reason" 
+        # }
+        return response, 200
+    else:
+        response = {
+            "message": "(failed) dummy reason" 
+        }
+        return response, 500
+
+
+@app.route("/api/node/confirm_exit", methods=["POST"])
+def http_node_confirm_exit():
+    app.logger.info("Incoming Request /api/node/confirm_exit")
+
+    data = request.json
+    exiting_node_id = data.get("node_id")
+    mongo_remove_node(exiting_node_id)
+
+    response = {
+        "message": "exit confirmation processed" 
+    }
+    return response, 200
+
+def calculate_job_decisions(node_info):
+    pass
+
+########################################
 # ..........................................................................#
 
 if __name__ == "__main__":
