@@ -299,7 +299,7 @@ def http_node_negotiate_exit():
         services = node_info["payload"]["services"]
 
         for service in services:
-            jobId = f"{service["job_name"]}.instance.{service["instance"]}"
+            jobId = f"{service['job_name']}.instance.{service['instance']}"
             response["decisions"].append(
                 {"jobId": jobId,
                 "decision": "KEEP" }
