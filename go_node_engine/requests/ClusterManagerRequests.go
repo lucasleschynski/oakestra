@@ -33,19 +33,21 @@ type ClusterExitResponse struct {
 // Negotiation Structs
 type NegotiationRequest struct {
 	NodeId string `json:"node_id"`
-	// JobID  string `json:"job_id"`
+	Jobs   []Job  `json:"jobs"`
 }
 
-// type Job struct {
-// 	JobID string
-// }
+type Job struct {
+	JobID          string `json:"job_id"`
+	JobName        string `json:"job_name"`
+	InstanceNumber int    `json:"instance"`
+}
 
 type NegotiationResponse struct {
 	Decisions []JobDecision `json:"decisions"`
 }
 
 type JobDecision struct {
-	JobID    string `json:"job_id"`
+	JobName  string `json:"job_name"`
 	Decision string `json:"decision"`
 }
 
@@ -130,12 +132,12 @@ func NotifyClusterExit(address string, port int, node_id string) ClusterExitResp
 	return exitResponse
 }
 
-func Negotiate(address string, port int, node_id string) {
+func Negotiate(address string, port int, node_id string, jobs []Job) {
 	for {
-
 		// Sending Request
 		request := NegotiationRequest{
 			NodeId: node_id,
+			Jobs:   jobs,
 		}
 
 		data, err := json.Marshal(request)

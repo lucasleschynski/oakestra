@@ -113,11 +113,13 @@ func startNodeEngine() error {
 		////////////////////////////////////////////////////////////////////////
 
 		logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
-		logger.InfoLogger().Printf("STARTING NEGOTIATION PROCEDURE")
-		runtime.PrintContainers()
-		requests.Negotiate(clusterAddress, clusterPort, handshakeResult.NodeId)
-		// logger.InfoLogger().Printf("Got response from cluster regarding exit: %s", exitResponse.Message)
 		logger.InfoLogger().Printf("PRINTING CONTAINERS")
+		runtime.PrintContainers()
+
+		logger.InfoLogger().Printf("STARTING NEGOTIATION PROCEDURE")
+		jobs := runtime.GetActiveJobs()
+		requests.Negotiate(clusterAddress, clusterPort, handshakeResult.NodeId, jobs)
+		// logger.InfoLogger().Printf("Got response from cluster regarding exit: %s", exitResponse.Message)
 		runtime.WaitForContainerExits()
 	}
 

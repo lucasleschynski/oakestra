@@ -13,6 +13,7 @@ from flask import Flask, request
 from flask_socketio import SocketIO
 from mongodb_client import (
     mongo_find_job_by_system_id,
+    mongo_find_job_by_id,
     mongo_init,
     mongo_update_job_status,
     mongo_upsert_node,
@@ -290,31 +291,70 @@ def http_node_negotiate_exit():
     data = request.json  # get POST body
 
     exiting_node_id = data.get("node_id")
+    jobs = data.get("jobs")
+    
+    response = {"decisions": []}
 
-    node_info = mongo_find_node_by_id(exiting_node_id)
-    app.logger.info(f"{node_info}")
+    for job in jobs:
+        job_info = mongo_find_job_by_id(job["job_id"])
+        mongo_job_name = job_info["job_name"]
 
-    if node_info:
-        response = {"decisions": []}
-        services = node_info["payload"]["services"]
+        http_job_name = job["job_name"]
+        http_job_instance = job["instance"]
 
-        for service in services:
-            jobId = f"{service['job_name']}.instance.{service['instance']}"
-            response["decisions"].append(
-                {"jobId": jobId,
-                "decision": "KEEP" }
-            )
-        # mongo_remove_node(exiting_node_id)
+        if mongo_job_name != http_job_name:
+            app.logger.error(f"MONGO JOB NAME '{mongo_job_name}' !== WORKER JOB NAME '{http_job_name}'")
+            response = {
+                "message": "JOB NAME NOT FOUND" 
+            }
+            continue
+            # return 400, response
 
-        # response = {
-        #     "message": "(worked) dummy reason" 
-        # }
-        return response, 200
-    else:
-        response = {
-            "message": "(failed) dummy reason" 
-        }
-        return response, 500
+        if not any(d["instance_num"] == http_job_instance for d in job_info["instance_list"]):
+            app.logger.error(f"INSTANCE NUMBER {http_job_instance} NOT PRESENT IN JOB INFO")
+            response = {
+                "message": "JOB INSTANCE NOT PRESENT" 
+            }
+            continue
+            # return 400, response
+        
+        for d in job_info["instance_list"]:
+            if d["instance_num"] == http_job_instance:
+                response["decisions"].append({
+                    "job_name": f"{mongo_job_name}.instance.{http_job_instance}", 
+                    "decision":"KEEP",
+                })
+        
+    return response, 200
+
+
+
+    # node_info = mongo_find_node_by_id(exiting_node_id)
+    # app.logger.info(f"{node_info}")
+
+    # if node_info:
+
+    #     # response = {"decisions": []}
+    #     # services = node_info["payload"]["services"]
+    #     # services = node_info["payload"]["services"]
+
+    #     # for service in services:
+    #     #     jobId = f"{service['job_name']}.instance.{service['instance']}"
+    #     #     response["decisions"].append(
+    #     #         {"jobId": jobId,
+    #     #         "decision": "KEEP" }
+    #     #     )
+    #     # mongo_remove_node(exiting_node_id)
+
+    #     # response = {
+    #     #     "message": "(worked) dummy reason" 
+    #     # }
+    #     return response, 200
+    # else:
+    #     response = {
+    #         "message": "(failed) dummy reason" 
+    #     }
+    #     return response, 500
 
 
 @app.route("/api/node/confirm_exit", methods=["POST"])

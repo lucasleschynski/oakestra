@@ -216,6 +216,22 @@ func (r *ContainerRuntime) PrintContainers() error {
 	return nil
 }
 
+func (r *ContainerRuntime) GetActiveJobs() []requests.Job {
+	jobs := []requests.Job{}
+
+	for _, service := range r.services {
+		jsonService := requests.Job{
+			JobID:          service.JobID,
+			JobName:        service.Sname,
+			InstanceNumber: service.Instance,
+		}
+
+		jobs = append(jobs, jsonService)
+	}
+
+	return jobs
+}
+
 func (r *ContainerRuntime) containerCreationRoutine(
 	ctx context.Context,
 	image containerd.Image,
