@@ -310,7 +310,7 @@ def http_node_negotiate_exit():
             continue
             # return 400, response
 
-        if not any(d["instance_num"] == http_job_instance for d in job_info["instance_list"]):
+        if not any(d["instance_number"] == http_job_instance for d in job_info["instance_list"]):
             app.logger.error(f"INSTANCE NUMBER {http_job_instance} NOT PRESENT IN JOB INFO")
             response = {
                 "message": "JOB INSTANCE NOT PRESENT" 
@@ -319,7 +319,7 @@ def http_node_negotiate_exit():
             # return 400, response
         
         for d in job_info["instance_list"]:
-            if d["instance_num"] == http_job_instance:
+            if d["instance_number"] == http_job_instance:
                 response["decisions"].append({
                     "job_name": f"{mongo_job_name}.instance.{http_job_instance}", 
                     "decision":"KEEP",
