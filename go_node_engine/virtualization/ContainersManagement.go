@@ -30,6 +30,7 @@ import (
 type ContainerRuntime struct {
 	contaierClient *containerd.Client
 	killQueue      map[string]*chan bool
+	services       []*model.Service
 	channelLock    *sync.RWMutex
 	ctx            context.Context
 }
@@ -206,7 +207,11 @@ func (r *ContainerRuntime) PrintContainers() error {
 	}
 
 	for _, container := range containers {
-		fmt.Printf("CONTAINER: %s\n", container.ID())
+		fmt.Printf("CONTAINER_ID: %s\n", container.ID())
+	}
+
+	for _, service := range r.services {
+		fmt.Printf("SERVICE: %+v\n", service)
 	}
 	return nil
 }
@@ -341,6 +346,9 @@ func (r *ContainerRuntime) containerCreationRoutine(
 	// adv startup finished
 	startup <- true
 
+	// Inject service struct into ContainerRuntime
+	r.services = append(r.services, &service)
+
 	// wait for manual task kill or task finish
 	select {
 	case exitStatus := <-exitStatusC:
@@ -366,7 +374,17 @@ func (r *ContainerRuntime) containerCreationRoutine(
 		_ = requests.DetachNetworkFromTask(service.Sname, service.Instance)
 	}
 	statusChangeNotificationHandler(service)
+	remove(r.services, &service)
 	r.removeContainer(container)
+}
+
+func remove[T comparable](l []T, item T) []T {
+	for i, other := range l {
+		if other == item {
+			return append(l[:i], l[i+1:]...)
+		}
+	}
+	return l
 }
 
 func getTotalCpuUsageByPid(pid int32) (float64, error) {

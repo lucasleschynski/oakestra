@@ -33,7 +33,12 @@ type ClusterExitResponse struct {
 // Negotiation Structs
 type NegotiationRequest struct {
 	NodeId string `json:"node_id"`
+	// JobID  string `json:"job_id"`
 }
+
+// type Job struct {
+// 	JobID string
+// }
 
 type NegotiationResponse struct {
 	Decisions []JobDecision `json:"decisions"`
