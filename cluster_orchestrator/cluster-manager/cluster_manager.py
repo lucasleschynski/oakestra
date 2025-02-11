@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import requests
 import socket
 
@@ -317,44 +318,22 @@ def http_node_negotiate_exit():
             }
             continue
             # return 400, response
+
+        job_decision = calculate_job_decision(job_info)
         
         for d in job_info["instance_list"]:
-            if d["instance_number"] == http_job_instance:
+            if d["instance_number"] == http_job_instance and d["status"] == "RUNNING":
                 response["decisions"].append({
                     "job_name": f"{mongo_job_name}.instance.{http_job_instance}", 
-                    "decision":"KEEP",
+                    "decision": job_decision,
                 })
         
     return response, 200
 
 
-
-    # node_info = mongo_find_node_by_id(exiting_node_id)
-    # app.logger.info(f"{node_info}")
-
-    # if node_info:
-
-    #     # response = {"decisions": []}
-    #     # services = node_info["payload"]["services"]
-    #     # services = node_info["payload"]["services"]
-
-    #     # for service in services:
-    #     #     jobId = f"{service['job_name']}.instance.{service['instance']}"
-    #     #     response["decisions"].append(
-    #     #         {"jobId": jobId,
-    #     #         "decision": "KEEP" }
-    #     #     )
-    #     # mongo_remove_node(exiting_node_id)
-
-    #     # response = {
-    #     #     "message": "(worked) dummy reason" 
-    #     # }
-    #     return response, 200
-    # else:
-    #     response = {
-    #         "message": "(failed) dummy reason" 
-    #     }
-    #     return response, 500
+def calculate_job_decision(job_info):
+    options = ["KEEP", "KILL"]
+    return options[random.randint(0,1)]
 
 
 @app.route("/api/node/confirm_exit", methods=["POST"])
@@ -369,9 +348,6 @@ def http_node_confirm_exit():
         "message": "exit confirmation processed" 
     }
     return response, 200
-
-def calculate_job_decisions(node_info):
-    pass
 
 ########################################
 # ..........................................................................#

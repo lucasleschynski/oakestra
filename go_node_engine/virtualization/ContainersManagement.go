@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
 	"github.com/containerd/containerd"
@@ -392,6 +393,36 @@ func (r *ContainerRuntime) containerCreationRoutine(
 	statusChangeNotificationHandler(service)
 	remove(r.services, &service)
 	r.removeContainer(container)
+}
+
+func (r *ContainerRuntime) HandleJobOperations(decisions []requests.JobDecision) {
+	for _, decision := range decisions {
+		container, err := r.contaierClient.LoadContainer(r.ctx, decision.JobName)
+		if err != nil {
+			logger.InfoLogger().Printf("Error loading container %s: %v", decision.JobName, err)
+			continue
+		}
+
+		switch decision.Decision {
+		case "KILL":
+			task, err := container.Task(r.ctx, nil)
+			if err != nil {
+				logger.InfoLogger().Printf("Error retrieving task for container %s: %v", decision.JobName, err)
+				continue
+			}
+
+			if err := task.Kill(r.ctx, syscall.SIGKILL); err != nil {
+				logger.InfoLogger().Printf("Failed to kill container %s: %v", decision.JobName, err)
+				continue
+			}
+			logger.InfoLogger().Printf("Successfully killed container %s", decision.JobName)
+
+		case "KEEP":
+			logger.InfoLogger().Printf("Skipping container %s as decision is %s", decision.JobName, decision.Decision)
+		default:
+			logger.InfoLogger().Printf("Shouldn't be here, decision is neither keep nor kill.")
+		}
+	}
 }
 
 func remove[T comparable](l []T, item T) []T {
