@@ -292,6 +292,7 @@ def http_node_negotiate_exit():
     data = request.json  # get POST body
 
     exiting_node_id = data.get("node_id")
+    mongo_remove_node(exiting_node_id)
     jobs = data.get("jobs")
     
     response = {"decisions": []}
