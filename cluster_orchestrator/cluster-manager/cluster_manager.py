@@ -368,7 +368,7 @@ def http_get_cluster_workers():
     nodes = find_all_nodes()
 
     response = {
-        "nodes": list(nodes)
+        "nodes": json.dumps(nodes, default=str)
     }
     return response, 200
 
