@@ -108,6 +108,12 @@ func RegisterSelfToNetworkComponent() error {
 		"application/json",
 		bytes.NewBuffer(jsonReq),
 	)
+	if err != nil {
+		return err
+	}
+	if response.StatusCode != 200 {
+		return errors.New(fmt.Sprintf("NetManager registration failed, status code: %d", response.StatusCode))
+	}
 
 	defer func() {
 		if err := response.Body.Close(); err != nil {
@@ -115,12 +121,6 @@ func RegisterSelfToNetworkComponent() error {
 		}
 	}()
 
-	if err != nil {
-		return err
-	}
-	if response.StatusCode != 200 {
-		return errors.New(fmt.Sprintf("NetManager registration failed, status code: %d", response.StatusCode))
-	}
 	return nil
 }
 
