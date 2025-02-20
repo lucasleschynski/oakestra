@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"go_node_engine/logger"
 	"go_node_engine/model"
 	"net/http"
 	"sync"
@@ -107,6 +108,12 @@ func RegisterSelfToNetworkComponent() error {
 		"application/json",
 		bytes.NewBuffer(jsonReq),
 	)
+
+	defer func() {
+		if err := response.Body.Close(); err != nil {
+			logger.ErrorLogger().Fatalf("Exit request failed, %v", err)
+		}
+	}()
 
 	if err != nil {
 		return err
