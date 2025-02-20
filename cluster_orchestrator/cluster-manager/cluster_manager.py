@@ -368,7 +368,7 @@ def http_get_cluster_workers():
     nodes = find_all_nodes()
 
     response = {
-        "nodes": nodes
+        "nodes": list(nodes)
     }
     return response, 200
 
