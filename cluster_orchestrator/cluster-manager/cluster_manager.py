@@ -13,6 +13,7 @@ from cm_logging import configure_logging
 from flask import Flask, request
 from flask_socketio import SocketIO
 from mongodb_client import (
+    find_all_nodes,
     mongo_find_job_by_system_id,
     mongo_find_job_by_id,
     mongo_init,
@@ -352,6 +353,27 @@ def http_node_confirm_exit():
 
 ########################################
 # ..........................................................................#
+
+
+###### EVALUATION AND TESTS ######
+
+@app.route("/api/node/get_workers", methods=["POST"])
+def http_get_cluster_workers():
+    app.logger.info("Incoming Request /api/node/get_workers")
+
+    data = request.json
+    # exiting_node_id = data.get("node_id")
+    # mongo_remove_node(exiting_node_id)
+
+    nodes = find_all_nodes()
+
+    response = {
+        "nodes": nodes
+    }
+    return response, 200
+
+##################################
+
 
 if __name__ == "__main__":
 

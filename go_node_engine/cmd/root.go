@@ -101,39 +101,39 @@ func startNodeEngine() error {
 	select {
 	case ossignal := <-termination:
 		/////////////////////// WAIT FOR CONTAINER EXITS ///////////////////////
-		// logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
-		// exitResponse := requests.NotifyClusterExit(clusterAddress, clusterPort, handshakeResult.NodeId)
-		// logger.InfoLogger().Printf("Got response from cluster regarding exit: %s", exitResponse.Message)
+		logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
+		exitResponse := requests.NotifyClusterExit(clusterAddress, clusterPort, handshakeResult.NodeId)
+		logger.InfoLogger().Printf("Got response from cluster regarding exit: %s", exitResponse.Message)
 
-		// // call function which waits for containers to exit
-		// logger.InfoLogger().Printf("Waiting for all containers to exit...")
-		// runtime.PrintContainers()
-		// runtime.WaitForContainerExits()
-		// logger.InfoLogger().Printf("All containers have exited")
+		// call function which waits for containers to exit
+		logger.InfoLogger().Printf("Waiting for all containers to exit...")
+		runtime.PrintContainers()
+		runtime.WaitForContainerExits()
+		logger.InfoLogger().Printf("All containers have exited")
 		////////////////////////////////////////////////////////////////////////
 
-		logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
-		logger.InfoLogger().Printf("PRINTING CONTAINERS")
-		runtime.PrintContainers()
+		// logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
+		// logger.InfoLogger().Printf("PRINTING CONTAINERS")
+		// runtime.PrintContainers()
 
-		logger.InfoLogger().Printf("STARTING NEGOTIATION PROCEDURE")
-		i := 0
-		for {
-			jobs := runtime.GetActiveJobs()
-			logger.InfoLogger().Printf("CYCLE %d", i)
-			logger.InfoLogger().Printf("ACTIVE JOBS: %+v", jobs)
-			if len(jobs) == 0 {
-				break
-			}
-			jobDecisions := requests.Negotiate(clusterAddress, clusterPort, handshakeResult.NodeId, jobs).Decisions
-			logger.InfoLogger().Printf("JOB DECISIONS: %+v", jobDecisions)
-			runtime.HandleJobOperations(jobDecisions)
-			time.Sleep(2 * time.Second)
-			i += 1
-		}
+		// logger.InfoLogger().Printf("STARTING NEGOTIATION PROCEDURE")
+		// i := 0
+		// for {
+		// 	jobs := runtime.GetActiveJobs()
+		// 	logger.InfoLogger().Printf("CYCLE %d", i)
+		// 	logger.InfoLogger().Printf("ACTIVE JOBS: %+v", jobs)
+		// 	if len(jobs) == 0 {
+		// 		break
+		// 	}
+		// 	jobDecisions := requests.Negotiate(clusterAddress, clusterPort, handshakeResult.NodeId, jobs).Decisions
+		// 	logger.InfoLogger().Printf("JOB DECISIONS: %+v", jobDecisions)
+		// 	runtime.HandleJobOperations(jobDecisions)
+		// 	time.Sleep(2 * time.Second)
+		// 	i += 1
+		// }
 
-		// logger.InfoLogger().Printf("Got response from cluster regarding exit: %s", exitResponse.Message)
-		runtime.WaitForContainerExits()
+		// // logger.InfoLogger().Printf("Got response from cluster regarding exit: %s", exitResponse.Message)
+		// runtime.WaitForContainerExits()
 	}
 
 	return nil
