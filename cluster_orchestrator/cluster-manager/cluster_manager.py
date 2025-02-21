@@ -366,7 +366,7 @@ def http_get_cluster_workers():
     # mongo_remove_node(exiting_node_id)
 
     nodes = find_all_nodes()
-    count = nodes.count()
+    count = nodes.count_documents()
 
     response = {
         # "nodes": json.dumps(list(nodes), default=str)
