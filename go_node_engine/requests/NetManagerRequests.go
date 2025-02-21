@@ -95,6 +95,26 @@ func DetachNetworkFromTask(servicename string, instance int) error {
 
 // RegisterSelfToNetworkComponent registers the node to the network component
 func RegisterSelfToNetworkComponent() error {
+	// request := registerRequest{
+	// 	ClientId: model.GetNodeInfo().Id,
+	// }
+	// jsonReq, err := json.Marshal(request)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// response, err := httpClient.Post(
+	// 	fmt.Sprintf("http://localhost:%d/register", model.GetNodeInfo().NetManagerPort),
+	// 	"application/json",
+	// 	bytes.NewBuffer(jsonReq),
+	// )
+	// if err != nil {
+	// 	return err
+	// }
+	// if response.StatusCode != 200 {
+	// 	return errors.New(fmt.Sprintf("NetManager registration failed, status code: %d", response.StatusCode))
+	// }
+
 	request := registerRequest{
 		ClientId: model.GetNodeInfo().Id,
 	}
@@ -103,16 +123,20 @@ func RegisterSelfToNetworkComponent() error {
 		return err
 	}
 
-	response, err := httpClient.Post(
-		fmt.Sprintf("http://localhost:%d/register", model.GetNodeInfo().NetManagerPort),
-		"application/json",
-		bytes.NewBuffer(jsonReq),
-	)
+	url := fmt.Sprintf("http://localhost:%d/register", model.GetNodeInfo().NetManagerPort)
+
+	// Manually construct the HTTP request
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonReq))
 	if err != nil {
 		return err
 	}
-	if response.StatusCode != 200 {
-		return errors.New(fmt.Sprintf("NetManager registration failed, status code: %d", response.StatusCode))
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Close = true // Ensure the connection is not reused
+
+	response, err := httpClient.Do(req)
+	if err != nil {
+		return err
 	}
 
 	defer func() {
