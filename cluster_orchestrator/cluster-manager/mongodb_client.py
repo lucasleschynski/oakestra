@@ -123,6 +123,9 @@ def find_all_nodes():
     global mongo_nodes
     return mongo_nodes.db.nodes.find()
 
+def get_node_count():
+    global mongo_nodes
+    return mongo_nodes.db.nodes.count_documents({})
 
 def mongo_dead_nodes():
     print("looking for dead nodes")

@@ -14,6 +14,7 @@ from flask import Flask, request
 from flask_socketio import SocketIO
 from mongodb_client import (
     find_all_nodes,
+    get_node_count,
     mongo_find_job_by_system_id,
     mongo_find_job_by_id,
     mongo_init,
@@ -365,8 +366,7 @@ def http_get_cluster_workers():
     # exiting_node_id = data.get("node_id")
     # mongo_remove_node(exiting_node_id)
 
-    nodes = find_all_nodes()
-    count = nodes.count_documents()
+    count = get_node_count()
 
     response = {
         # "nodes": json.dumps(list(nodes), default=str)
