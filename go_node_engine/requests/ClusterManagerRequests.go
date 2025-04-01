@@ -22,6 +22,7 @@ type ClusterHandshakeAnswer struct {
 type ClusterExitRequest struct {
 	NodeId     string `json:"node_id"`
 	ExitStatus string `json:"exit_status"`
+	Jobs       []Job  `json:"jobs"`
 }
 
 type ClusterExitResponse struct {
@@ -95,9 +96,10 @@ func ClusterHandshake(address string, port int) ClusterHandshakeAnswer {
 	return handshakeAnswer
 }
 
-func NotifyClusterExit(address string, port int, node_id string) ClusterExitResponse {
+func NotifyClusterExit(address string, port int, node_id string, jobs []Job) ClusterExitResponse {
 	request := ClusterExitRequest{
 		NodeId: node_id,
+		Jobs:   jobs,
 	}
 
 	data, err := json.Marshal(request)

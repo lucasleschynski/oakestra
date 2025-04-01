@@ -444,3 +444,7 @@ def mongo_remove_job_instance(system_job_id, instance_number):
 def mongo_remove_node(node_id):
     global mongo_nodes
     return mongo_nodes.db.nodes.find_one_and_delete({"_id": ObjectId(node_id)})
+
+
+def mongo_remove_job(id):
+    return mongo_jobs.db.jobs.find_one_and_delete({"_id": ObjectId(id)})

@@ -100,9 +100,10 @@ func startNodeEngine() error {
 
 	select {
 	case ossignal := <-termination:
-		/////////////////////// WAIT FOR CONTAINER EXITS ///////////////////////
+		////////////// "Improved" Solution - Waiting for  Exits ////////////////
 		logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
-		exitResponse := requests.NotifyClusterExit(clusterAddress, clusterPort, handshakeResult.NodeId)
+		jobs := runtime.GetActiveJobs()
+		exitResponse := requests.NotifyClusterExit(clusterAddress, clusterPort, handshakeResult.NodeId, jobs)
 		logger.InfoLogger().Printf("Got response from cluster regarding exit: %s", exitResponse.Message)
 
 		// call function which waits for containers to exit
@@ -112,6 +113,7 @@ func startNodeEngine() error {
 		logger.InfoLogger().Printf("All containers have exited")
 		////////////////////////////////////////////////////////////////////////
 
+		/////////////////////// Negotiation-Based Method ///////////////////////
 		// logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
 		// logger.InfoLogger().Printf("PRINTING CONTAINERS")
 		// runtime.PrintContainers()

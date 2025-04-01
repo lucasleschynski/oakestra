@@ -21,7 +21,8 @@ from mongodb_client import (
     mongo_update_job_status,
     mongo_upsert_node,
     mongo_find_node_by_id,
-    mongo_remove_node
+    mongo_remove_node,
+    mongo_remove_job
 )
 from mqtt_client import mqtt_init, mqtt_publish_edge_deploy
 from my_prometheus_client import prometheus_init_gauge_metrics
@@ -268,8 +269,13 @@ def http_node_request_exit():
     data = request.json  # get POST body
 
     exiting_node_id = data.get("node_id")
+    jobs = data.get("jobs")
 
     node_info = mongo_find_node_by_id(exiting_node_id)
+
+    for job in jobs:
+        mongo_remove_job(job["job_id"])
+
     app.logger.info(f"{node_info}")
 
     if node_info:
