@@ -47,7 +47,7 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}/timed-container
+  IMAGE_NAME: ${{ github.repository }}/timed-container-efficiency
 
 
 jobs:
@@ -111,7 +111,7 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v3
         with:
-          context: ./testing/timed_container/
+          context: ./testing/timed_container_efficiency/
           platforms: linux/amd64,linux/armhf,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
