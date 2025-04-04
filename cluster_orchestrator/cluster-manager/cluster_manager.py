@@ -261,10 +261,12 @@ def register_with_system_manager():
 
 # ........... DYNAMIC PARTICIPATION.................#
 
-
-###### SIMPLE EXIT ######
+###### NAIVE/IMPROVED EXIT ######
 @app.route("/api/node/request_exit", methods=["POST"])
 def http_node_request_exit():
+    """This function is used as the communication endpoint for both the naive
+        and improved exit procedures. 
+    """
     app.logger.info("Incoming Request /api/node/request_exit")
     data = request.json  # get POST body
 
@@ -296,6 +298,10 @@ def http_node_request_exit():
 ###### HEURISTIC/NEGOTIATION EXIT ######
 @app.route("/api/node/negotiate_exit", methods=["POST"])
 def http_node_negotiate_exit():
+    """This function is used as the point of communication for the heuristic-based
+        exit procedure. It receives a list of jobs from the worker and sends back
+        the keep/kill decisions based on the output of calculate_job_decisions()
+    """
     app.logger.info("Incoming Request /api/node/negotiate_exit")
     data = request.json  # get POST body
 
@@ -341,12 +347,18 @@ def http_node_negotiate_exit():
 
 
 def calculate_job_decision(job_info):
+    """This is the *policy* part of the negotiation procedure. It should incorporate
+        heuristics to make intelligent keep/kill decisions, but we have not explored
+        this. It is a point of further work.
+    """
     options = ["KEEP", "KILL"]
     return options[random.randint(0,1)]
 
 
 @app.route("/api/node/confirm_exit", methods=["POST"])
 def http_node_confirm_exit():
+    """Endpoint for final confirmation of worker exit. Very simple.
+    """
     app.logger.info("Incoming Request /api/node/confirm_exit")
 
     data = request.json
@@ -366,16 +378,12 @@ def http_node_confirm_exit():
 
 @app.route("/api/node/get_workers", methods=["POST"])
 def http_get_cluster_workers():
+    """Gets the number of workers in the cluster. Used for the elasticity testing.
+    """
     app.logger.info("Incoming Request /api/node/get_workers")
-
-    data = request.json
-    # exiting_node_id = data.get("node_id")
-    # mongo_remove_node(exiting_node_id)
-
     count = get_node_count()
 
     response = {
-        # "nodes": json.dumps(list(nodes), default=str)
         "count": count
     }
     return response, 200

@@ -69,7 +69,6 @@ def mongo_upsert_node(obj):
 
 def mongo_find_node_by_id(node_id):
     global mongo_nodes
-    # return mongo_nodes.db.nodes.find_one(node_id)
     return mongo_nodes.db.nodes.find_one({"_id": ObjectId(node_id)})
 
 
@@ -84,8 +83,6 @@ def mongo_find_node_by_name(node_name):
 def mongo_find_node_by_id_and_update_cpu_mem(node_id, node_payload):
     global app, mongo_nodes
     app.logger.info("MONGODB - update cpu and memory of worker node {0} ...".format(node_id))
-    # o = mongo.db.nodes.find_one({'_id': node_id})
-    # print(o)
 
     time_now = datetime.now()
 

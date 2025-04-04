@@ -18,6 +18,8 @@ type RootHandshakeAnswer struct {
 
 // ClusterHandshake sends a handshake request to the cluster manager
 func RootHandshake(address string, port int) RootHandshakeAnswer {
+	// Initial handshake with root orchestrator upon worker join.
+
 	data, err := json.Marshal(model.GetNodeInfo())
 	if err != nil {
 		logger.ErrorLogger().Fatalf("Handshake failed, json encoding problem, %v", err)
@@ -48,7 +50,3 @@ func RootHandshake(address string, port int) RootHandshakeAnswer {
 	}
 	return handshakeAnswer
 }
-
-// func RootExit() {
-// 		When the worker decides to exit, it will need to send a request to the root to tell it this.
-// }

@@ -63,8 +63,9 @@ type ExitConfirmaionResponse struct {
 
 //////////////////////////////////////////////////
 
-// ClusterHandshake sends a handshake request to the cluster manager
 func ClusterHandshake(address string, port int) ClusterHandshakeAnswer {
+	// This function sends a handshake request to the cluster manager
+	// after the root has responded with its information.
 	data, err := json.Marshal(model.GetNodeInfo())
 	if err != nil {
 		logger.ErrorLogger().Fatalf("Handshake failed, json encoding problem, %v", err)
@@ -97,6 +98,8 @@ func ClusterHandshake(address string, port int) ClusterHandshakeAnswer {
 }
 
 func NotifyClusterExit(address string, port int, node_id string, jobs []Job) ClusterExitResponse {
+	// This is the function to used to notify the cluster orchestrator of a worker exit
+	// in the "Naive" and "Improved" solutions.
 	request := ClusterExitRequest{
 		NodeId: node_id,
 		Jobs:   jobs,
@@ -135,8 +138,8 @@ func NotifyClusterExit(address string, port int, node_id string, jobs []Job) Clu
 }
 
 func Negotiate(address string, port int, node_id string, jobs []Job) NegotiationResponse {
-	// for {
-	// Sending Request
+	// This function sends the running jobs to the cluster orchestrator and receives a list
+	// of keep/kill decisions for each of the jobs.
 	request := NegotiationRequest{
 		NodeId: node_id,
 		Jobs:   jobs,
@@ -177,48 +180,35 @@ func Negotiate(address string, port int, node_id string, jobs []Job) Negotiation
 
 	fmt.Println("NEGOTIATION RESPONSE:", negotiationResponse.Decisions)
 	return negotiationResponse
-	// 	break
-	// }
-
-	// // return negotiationResponse
 }
 
 func ConfirmExit(address string, port int, node_id string) {
+	data, err := json.Marshal(model.GetNodeInfo())
+	if err != nil {
+		logger.ErrorLogger().Fatalf("Handshake failed, json encoding problem, %v", err)
+	}
+	jsonbody := bytes.NewBuffer(data)
+	resp, err := http.Post(fmt.Sprintf("http://%s:%d/api/node/confirm_exit", address, port), "application/json", jsonbody)
+	if err != nil {
+		logger.ErrorLogger().Fatalf("Handshake failed, %v", err)
+	}
+	if resp.StatusCode != 200 {
+		logger.ErrorLogger().Fatalf("Handshake failed with error code %d", resp.StatusCode)
+	}
+	//defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			logger.ErrorLogger().Fatalf("Handshake failed, %v", err)
+		}
+	}()
 
+	handshakeAnswer := ClusterHandshakeAnswer{}
+	responseBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		logger.ErrorLogger().Fatalf("Handshake failed, %v", err)
+	}
+	err = json.Unmarshal(responseBytes, &handshakeAnswer)
+	if err != nil {
+		logger.ErrorLogger().Fatalf("Handshake failed, %v", err)
+	}
 }
-
-// func Negotiate(address string, port int, node_id string) {
-// 	request := NegotiationRequest{
-// 		NodeId: node_id,
-// 	}
-
-// 	data, err := json.Marshal(request)
-// 	if err != nil {
-// 		logger.ErrorLogger().Fatalf("Exit request failed, json encoding problem, %v", err)
-// 	}
-// 	jsonbody := bytes.NewBuffer(data)
-
-// 	resp, err := http.Post(fmt.Sprintf("http://%s:%d/api/node/request_exit", address, port), "application/json", jsonbody)
-// 	if err != nil {
-// 		logger.ErrorLogger().Fatalf("Exit request failed, %v", err)
-// 	}
-// 	if resp.StatusCode != 200 {
-// 		logger.ErrorLogger().Fatalf("Exit request failed with error code %d", resp.StatusCode)
-// 	}
-
-// 	defer func() {
-// 		if err := resp.Body.Close(); err != nil {
-// 			logger.ErrorLogger().Fatalf("Exit request failed, %v", err)
-// 		}
-// 	}()
-
-// 	exitResponse := ExitConfirmaionResponse{}
-// 	responseBytes, err := io.ReadAll(resp.Body)
-// 	if err != nil {
-// 		logger.ErrorLogger().Fatalf("Handshake failed, %v", err)
-// 	}
-// 	err = json.Unmarshal(responseBytes, &exitResponse)
-// 	if err != nil {
-// 		logger.ErrorLogger().Fatalf("Handshake failed, %v", err)
-// 	}
-// }

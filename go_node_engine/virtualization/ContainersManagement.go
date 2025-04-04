@@ -161,6 +161,10 @@ func (r *ContainerRuntime) Undeploy(service string, instance int) error {
 }
 
 func (r *ContainerRuntime) WaitForContainerExits() error {
+	// This function spins on all of the containers in the runtime
+	// and waits for them to all exit. It then returns.
+	// It used for the "Improved" soft termination exit procedure.
+
 	// Get the list of containers
 	containers, err := r.contaierClient.Containers(r.ctx)
 	if err != nil {
@@ -202,6 +206,7 @@ func (r *ContainerRuntime) WaitForContainerExits() error {
 }
 
 func (r *ContainerRuntime) PrintContainers() error {
+	// Debugging function for printing containers and their attributes.
 	containers, err := r.contaierClient.Containers(r.ctx)
 	if err != nil {
 		return fmt.Errorf("failed to list containers: %w", err)
@@ -218,6 +223,9 @@ func (r *ContainerRuntime) PrintContainers() error {
 }
 
 func (r *ContainerRuntime) GetActiveJobs() []requests.Job {
+	// Gets the active jobs/containers running on the worker so that this can
+	// be communicated to the cluster orchestrator. This is used by all exit procedures
+	// in their communication with the cluster orchestrator during the exit.
 	jobs := []requests.Job{}
 
 	for _, service := range r.services {
@@ -396,6 +404,10 @@ func (r *ContainerRuntime) containerCreationRoutine(
 }
 
 func (r *ContainerRuntime) HandleJobOperations(decisions []requests.JobDecision) {
+	// This is part of the *mechanism* for the heuristic-based exit procedure. It takes
+	// the list of job decisions from the cluster orchestrator and carries them out
+	// on the running jobs. i.e., it terminates or leaves containers depending on the
+	// keep/kill decision.
 	for _, decision := range decisions {
 		container, err := r.contaierClient.LoadContainer(r.ctx, decision.JobName)
 		if err != nil {

@@ -19,11 +19,13 @@ worker_join_schema = {
 
 @dynamic_join_bp.route("/register_intent")
 class DynamicJoinController(MethodView):
-    # @dynamic_join_bp.arguments(schema=worker_join_schema, location="json", validate=False, unknown=True)
     def post(self, *args, **kwargs):
+        """This is the API endpoint which the worker makes first contact with
+            when joining the network. It selects a cluster for the worker 
+            and sends the cluster information back to the worker.
+        """
         data = request.get_json()
         logging.log(logging.INFO, data)
-        # worker_ip = data.get("worker_ip")
 
         clusters = list(cluster_operations.get_resources(active=True))
         if clusters is None:
@@ -40,7 +42,14 @@ class DynamicJoinController(MethodView):
 
         return json_util.dumps(response)
     
-
-## TODO: implement something for this
 def choose_cluster(clusters):
+    """This function chooses a cluster for a worker. For now, it is implemented as simply
+        as possible. However, as we discuss in the report, we would like to see it 
+        implemented in a more intelligent way; e.g., using latency/geographical
+        information to choose the most appropriate cluster for the worker. 
+
+        This function is the *policy* for the cluster selection procedure, and is
+        separate from the *mechanism*. We describe this in the design chapter when
+        we talk about extensibility. 
+    """
     return clusters[0]

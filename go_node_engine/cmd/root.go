@@ -45,7 +45,6 @@ func Execute() error {
 func init() {
 	rootCmd.Flags().StringVarP(&rootAddress, "rootAddr", "r", "localhost", "Address of the root orchestrator without port")
 	rootCmd.Flags().IntVarP(&rootPort, "rootPort", "p", 10100, "Port of the root orchestrator")
-
 	// rootCmd.Flags().StringVarP(&clusterAddress, "clusterAddr", "a", "localhost", "Address of the cluster orchestrator without port")
 	// rootCmd.Flags().IntVarP(&clusterPort, "clusterPort", "p", 10100, "Port of the cluster orchestrator")
 	rootCmd.Flags().IntVarP(&overlayNetwork, "netmanagerPort", "n", 6000, "Port of the NetManager component, if any. This enables the overlay network across nodes. Use -1 to disable Overlay Network Mode.")
@@ -100,6 +99,13 @@ func startNodeEngine() error {
 
 	select {
 	case ossignal := <-termination:
+		// Note: One of these sections must be uncommented depending on the desired exit method.
+		////////////// "Naive" Solution - Hard Termination ////////////////
+		// logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
+		// jobs := runtime.GetActiveJobs()
+		// exitResponse := requests.NotifyClusterExit(clusterAddress, clusterPort, handshakeResult.NodeId, jobs)
+		// logger.InfoLogger().Printf("Got response from cluster regarding exit: %s", exitResponse.Message)
+
 		////////////// "Improved" Solution - Waiting for  Exits ////////////////
 		logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
 		jobs := runtime.GetActiveJobs()
@@ -113,7 +119,10 @@ func startNodeEngine() error {
 		logger.InfoLogger().Printf("All containers have exited")
 		////////////////////////////////////////////////////////////////////////
 
-		/////////////////////// Negotiation-Based Method ///////////////////////
+		/////////////////////// Negotiation-Based Solution (WIP) ///////////////////////
+		// Note: This method is a work in progress. The mechanism for negoatiation is in place,
+		// but the policy used for job keep/kill decisions is not properly implemented.
+		//
 		// logger.InfoLogger().Printf("Terminating the NodeEngine, signal: %v", ossignal)
 		// logger.InfoLogger().Printf("PRINTING CONTAINERS")
 		// runtime.PrintContainers()
@@ -133,8 +142,7 @@ func startNodeEngine() error {
 		// 	time.Sleep(2 * time.Second)
 		// 	i += 1
 		// }
-
-		// // logger.InfoLogger().Printf("Got response from cluster regarding exit: %s", exitResponse.Message)
+		// requests.ConfirmExit(clusterAddress, clusterPort, handshakeResult.NodeId)
 		// runtime.WaitForContainerExits()
 	}
 
